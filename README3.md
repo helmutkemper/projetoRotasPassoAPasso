@@ -95,7 +95,6 @@ impresso no terminal.
   // origin: Recife
   // destination: Cabo de Santo Agostinho
   // price: 80
-}
 ```
 
 A grande vantagem desse teste é servir de documentação e você tem a obrigação de escrever
