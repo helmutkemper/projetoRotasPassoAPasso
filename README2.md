@@ -231,6 +231,8 @@ func (el *TestDataSource) GetStretchByDestination(
 )
 ```
 
+> O erro deve ser sempre a última coisa retornada por padrão do Golang.
+
 **stretchList** foi definido no retorno, e é equivalente à **var stretchList 
 []commomTypes.RouteStretch** e as mesmas regras devem ser aplicadas, ou seja, falta a 
 função **make()**, por isto, devemos fazer:
