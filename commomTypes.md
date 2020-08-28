@@ -41,13 +41,13 @@ Por isto, sempre crie os tipos.
   type Price int
 ```
 
-Golang é uma linguagem tipada e os tipos devem ser respeitados.
+> Cuidado: Golang é uma linguagem tipada e os tipos devem ser respeitados.
 
 A criação de tipo também permite a orientação a objeto, onde um tipo é um objeto e aceita
 funções em caso de validação ou outra necessidade qualquer.
 
 Uma característica minha é dividir todos os tipos e funções em arquivos separados, para
-facilitar encontrar o tipo/função e fara facilitar ver onde falta escrever os testes.
+facilitar encontrar o tipo/função e para facilitar ver onde falta escrever os testes.
 
 ## Fonte de dados
 
@@ -81,8 +81,8 @@ type RouteStretch struct {
 ```
 
 O tipo comum deve ser um módulo separado para evitar referência cíclica:
-O pacote A carrega o pacote B, o pacote B carrega o pacote A novamente. Isto é coisa que
-o PHP trabalha bem, mas, para o Golang encara into como falha de arquitetura.
+O pacote **A** carrega o pacote **B**, o pacote **B** carrega o pacote **A** novamente. 
+Isto é coisa que o PHP trabalha bem, mas, o Golang encara into como falha de arquitetura.
 
 Para começar, vamos criar um pacote **testDataSource** dessa forma:
 
@@ -101,14 +101,14 @@ type TestDataSource struct {
 }
 ```
 
-Todas as rotas vão ser arquivadas em forma de array na memória. Perder os dados não é um 
-problema para o exercício, no momento.
+Todas as rotas vão ser arquivadas em forma de array na memória, até a parte final do 
+projeto.
 ```golang
   dataList  []commomTypes.RouteStretch
 ```
 
-Mutex permite travar o código enquanto uma operação estiver em progresso, evitando que 
-mais de uma thread tente acessar o mesmo dado ao mesmo tempo.
+**Mutex** permite bloquear o código enquanto uma operação estiver em progresso, impedindo 
+mais de uma thread acessar o mesmo dado ao mesmo tempo.
 ```golang
   mutex sync.Mutex
 ```
@@ -146,23 +146,26 @@ func (el *TestDataSource) AddRoute(
 ```
 
 Quebrar os parâmetros de entrada em linhas distintas ajudam quando a resolução do monitor 
-é baixa e deixa o código mais claro.
+é baixa, além de deixa o código mais claro.
 ```golang
 // Adiciona uma nova rota a fonte de dados
 func (el *TestDataSource) AddRoute(
   origin commomTypes.Origin,
   destination commomTypes.Destination,
   price commomTypes.Price,
-) {
+)
 ```
 
-Trava o acesso ao objeto até que a função termine a sua execução:
+Trava o acesso ao objeto até a função termine a sua execução:
 ```golang
   el.mutex.Lock()
   defer el.mutex.Unlock()
 ```
 
-Todo array deve ser inicializado antes do uso sobe pena de travamento, por isto a verificação:
+> **defer** permite chamar uma função ao final da função principal.
+
+Todo array deve ser inicializado antes do uso, sobe pena de travamento, por isto a 
+verificação:
 ```golang
   if len(el.dataList) == 0 {
     el.dataList = make([]commomTypes.RouteStretch, 0)
@@ -229,13 +232,14 @@ func (el *TestDataSource) GetStretchByDestination(
 ```
 
 **stretchList** foi definido no retorno, e é equivalente à **var stretchList 
-[]commomTypes.RouteStretch** com as mesmas regras se aplicando, ou seja, falta a função
-**make()** e ela tem de ser usada dentro da função.
+[]commomTypes.RouteStretch** e as mesmas regras devem ser aplicadas, ou seja, falta a 
+função **make()**, por isto, devemos fazer:
 ```golang
   stretchList = make([]commomTypes.RouteStretch, 0)
 ```
 
-Faz uma busca em todos os itens da rota e popula o array de saída, quando os dados batem.
+Faz uma busca em todos os itens da rota e popula o array de resposta, quando os dados 
+batem.
 ```golang
   for _, dataLine := range el.dataList {
     if dataLine.Destination == destination {
@@ -258,8 +262,6 @@ motivos práticos:
  * Impede erro de digitação;
  * Fica mais fácil traduzir, caso necessário;
  * Fica fácil documentar quais funções podem gerar a mensagem de erro.
-
-Por isto, há o arquivo de constantes para o módulo.
 
 Arquivo: consts.go
 ```golang
